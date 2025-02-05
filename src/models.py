@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional, Union
 from random import randint
 
 from pygame import *
@@ -20,7 +20,13 @@ class Target(sprite.Sprite):
         )
         self.rect = self.img.get_rect()
         self.rect.x, self.rect.y = randint(50, 590), randint(50, 380)
+        self.time_of_remove = randint(50, 80)
         self.count = 0
+
+    def update(self, targets: list):
+        self.count += 1
+        if self.count >= self.time_of_remove:
+            targets.remove(self)
 
     def draw(self):
         window.blit(self.img, (self.rect.x, self.rect.y))
@@ -32,32 +38,32 @@ class Text:
             position: Tuple[int, int],
             size: int,
             text: str,
-            font_txt: str = None,
-            color_txt: Tuple[int, int, int] = (0, 0, 0)
+            font_txt: Optional[str],
+            color_txt: Tuple[int, int, int] = (255, 255, 255)
     ):
         self.position = position
-        self.font_txt = font.Font(font_txt, size)
+        self.font = font.Font(font_txt, size)
         self.color_txt = color_txt
-        self.text = self.font_txt.render(text, True, color_txt)
+        self.text = self.font.render(text, True, color_txt)
 
     def update_text(self, new_text: str):
-        self.text = self.font_txt.render(new_text, True, self.color_txt)
+        self.text = self.font.render(new_text, True, self.color_txt)
 
     def draw(self):
         window.blit(self.text, self.position)
 
 
 class MissClick(Text):
-    def update_miss(self, miss: int | str):
+    def update_miss(self, miss: Union[int, str]):
         super().update_text(f'Miss: {miss}')
 
 
 class Score(Text):
-    def update_score(self, new_score: int | str):
+    def update_score(self, new_score: Union[int, str]):
         super().update_text(f'Score: {new_score}')
 
 
 class Record(Text):
-    def update_record(self, new_record: int):
+    def update_record(self, new_record: Union[int, str]):
         super().update_text(f'Record: {new_record}')
 
