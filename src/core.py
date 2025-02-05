@@ -34,7 +34,6 @@ def run_game(status=True) -> None:
         miss.draw()
 
         count += 1
-
         if miss_count <= 0:
             restart_game()
 
